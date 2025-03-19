@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Questionnaire</title>
+    <link rel="stylesheet" href="/edit.css">
+</head>
+<body>
+    <div id="questionnaire-container">
+        <h2>Edit Questionnaire: <%= questionnaire.name %></h2>
+        <form id="edit-questionnaire-form">
+            <label for="questionnaire-name">Questionnaire Name:</label>
+            <input type="text" id="questionnaire-name" name="name" value="<%= questionnaire.name %>" required>
+
+            <label for="questionnaire-description">Description:</label>
+            <textarea id="questionnaire-description" name="description" required><%= questionnaire.description %></textarea>
+
+            <h3>Questions</h3>
+            <div id="questions-container">
+                <% questions.forEach((question, index) => { %>
+                    <div class="question">
+                        <label for="question-<%= question.id %>">Question <%= index + 1 %>:</label>
+                        <input type="text" id="question-<%= question.id %>" name="questions[<%= question.id %>][text]" value="<%= question.question_text %>" required>
+
+                        <label for="question-type-<%= question.id %>">Type:</label>
+                        <select id="question-type-<%= question.id %>" name="questions[<%= question.id %>][type]" required>
+                            <option value="text" <%= question.question_type === 'text' ? 'selected' : '' %>>Text</option>
+                            <option value="single" <%= question.question_type === 'single' ? 'selected' : '' %>>Single Choice</option>
+                            <option value="multiple" <%= question.question_type === 'multiple' ? 'selected' : '' %>>Multiple Choice</option>
+                        </select>
+
+                        <label for="question-answers-<%= question.id %>">Answers (comma separated):</label>
+                        <input type="text" id="question-answers-<%= question.id %>" name="questions[<%= question.id %>][answers]" value="<%= question.answers.join(', ') %>" placeholder="e.g. Yes, No, Maybe">
+                    </div>
+                <% }) %>
+            </div>
+
+            <button type="submit">Save Changes</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('edit-questionnaire-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const questionnaireId = window.location.pathname.split('/').pop();
+            const name = document.getElementById('questionnaire-name').value;
+            const description = document.getElementById('questionnaire-description').value;
+
+            // Extract the questions data from the form
+            const questions = Array.from(document.querySelectorAll('.question')).map(questionDiv => {
+                const questionId = questionDiv.querySelector('input[type="text"]').id.split('-').pop();
+                const questionText = questionDiv.querySelector('input[type="text"]').value;
+                const questionType = questionDiv.querySelector('select').value;
+                const answers = questionDiv.querySelector('input[type="text"]').value.split(',').map(answer => answer.trim());
+
+                return { id: questionId, questionText, questionType, answers };
+            });
+
+            // Send the updated data to the server
+            fetch(`/api/questionnaires/${questionnaireId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name, description, questions })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Questionnaire updated successfully');
+                window.location.href = '/'; // Redirect to the homepage or questionnaire list
+            })
+            .catch(error => {
+                console.error('Error updating questionnaire:', error);
+                alert('Error updating questionnaire');
+            });
+        });
+    </script>
+</body>
+</html>

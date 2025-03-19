@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Questionnaire App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation Tabs -->
+        <div class="navigation">
+            <button id="catalog-tab" onclick="showPage('catalog')">Questionnaire Catalog</button>
+            <button id="builder-tab" onclick="showPage('builder')">Questionnaire Builder</button>
+        </div>
+
+        <!-- Page 1: Questionnaire Catalog -->
+        <div id="catalog-page" class="page">
+            <h1>Questionnaire Catalog</h1>
+            <div class="questionnaire-list" id="questionnaire-list"></div>
+            <div class="pagination">
+                <button id="prev-btn" onclick="changePage('prev')">Previous</button>
+                <span id="page-num">Page 1</span>
+                <button id="next-btn" onclick="changePage('next')">Next</button>
+            </div>
+        </div>
+
+        <!-- Page 2: Questionnaire Builder -->
+        <div id="builder-page" class="page" style="display: none;">
+            <h1>Create a Questionnaire</h1>
+            <form id="questionnaire-form">
+                <label for="questionnaire-name">Questionnaire Name:</label>
+                <input type="text" id="questionnaire-name" name="name" required placeholder="Enter questionnaire name">
+
+                <label for="questionnaire-description">Description:</label>
+                <textarea id="questionnaire-description" name="description" required placeholder="Enter questionnaire description"></textarea>
+
+                <div id="questions-container"></div>
+
+                <button type="button" id="add-question-btn">Add Question</button>
+                <button type="submit" id="save-btn">Save Questionnaire</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="builder.js"></script>
+</body>
+</html>

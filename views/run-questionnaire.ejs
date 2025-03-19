@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Run Questionnaire</title>
+    <link rel="stylesheet" href="/run.css">
+    <script defer src="/run-questionnaire.js"></script>
+</head>
+<body>
+    <div id="questionnaire-container">
+        <h2><%= questionnaire.name %></h2>
+        <p><%= questionnaire.description %></p>
+
+        <form id="questionnaire-form">
+            <% questions.forEach((question, index) => { %>
+                <div class="question">
+                    <label><%= question.question_text %></label>
+
+                    <% if (question.question_type === 'text') { %>
+                        <input type="text" name="question-<%= index %>" required>
+                    <% } else if (question.question_type === 'single') { %>
+                        <% question.answers.forEach((answer) => { %>
+                            <label>
+                                <input type="radio" name="question-<%= index %>" value="<%= answer %>">
+                                <%= answer %>
+                            </label>
+                        <% }) %>
+                    <% } else if (question.question_type === 'multiple') { %>
+                        <% question.answers.forEach((answer) => { %>
+                            <label>
+                                <input type="checkbox" name="question-<%= index %>" value="<%= answer %>">
+                                <%= answer %>
+                            </label>
+                        <% }) %>
+                    <% } %>
+                </div>
+            <% }) %>
+
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</body>
+</html>
